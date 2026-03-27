@@ -46,6 +46,7 @@ function normalizeSong(song: Song, index: number) {
   return {
     ...song,
     audioBlob: song.audioBlob instanceof Blob ? song.audioBlob : null,
+    artBlob: song.artBlob instanceof Blob ? song.artBlob : null,
     sourceKey: typeof song.sourceKey === 'string' ? song.sourceKey : song.id,
     addedAt: typeof song.addedAt === 'number' ? song.addedAt : Date.now() - index,
   }

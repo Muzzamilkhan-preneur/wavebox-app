@@ -7,6 +7,7 @@ export interface Song {
   audioBlob?: Blob | null
   sourceKey?: string
   artUrl: string | null
+  artBlob?: Blob | null
   liked: boolean
   addedAt: number
 }

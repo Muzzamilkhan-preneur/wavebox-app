@@ -36,11 +36,18 @@ function blobToDataUrl(blob: Blob) {
 }
 
 async function toBackupSong(song: Song): Promise<Song> {
+  const artUrl =
+    song.artBlob instanceof Blob
+      ? await blobToDataUrl(song.artBlob)
+      : song.artUrl
+
   if (song.audioBlob instanceof Blob) {
     return {
       ...song,
       dataUrl: await blobToDataUrl(song.audioBlob),
       audioBlob: null,
+      artUrl,
+      artBlob: null,
     }
   }
 
@@ -51,6 +58,8 @@ async function toBackupSong(song: Song): Promise<Song> {
   return {
     ...song,
     audioBlob: null,
+    artUrl,
+    artBlob: null,
   }
 }
 

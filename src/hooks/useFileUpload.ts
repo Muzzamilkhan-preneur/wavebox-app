@@ -2,6 +2,29 @@ import { useCallback } from 'react'
 import { usePlayerStore } from '@/store/playerStore'
 import { showToast } from '@/components/Toast'
 import { Song } from '@/types'
+import { extractAudioMetadata } from '@/utils/audioMetadata'
+
+function parseFallbackName(fileName: string) {
+  const raw = fileName.replace(/\.[^/.]+$/, '')
+  const dashIndex = Math.max(raw.lastIndexOf(' - '), raw.lastIndexOf(' – '))
+  const dotIndex = raw.lastIndexOf('. ')
+
+  if (dashIndex > 0) {
+    return {
+      name: raw.slice(0, dashIndex).trim(),
+      artist: raw.slice(dashIndex + 3).trim() || 'Unknown artist',
+    }
+  }
+
+  if (dotIndex > 0) {
+    return {
+      name: raw.slice(0, dotIndex).trim(),
+      artist: raw.slice(dotIndex + 2).trim() || 'Unknown artist',
+    }
+  }
+
+  return { name: raw, artist: 'Unknown artist' }
+}
 
 export function useFileUpload() {
   const addSongs = usePlayerStore((s) => s.addSongs)
@@ -18,23 +41,23 @@ export function useFileUpload() {
       )
       if (!arr.length) return
 
-      arr.forEach((file) => {
-        const raw = file.name.replace(/\.[^/.]+$/, '')
-        const match = raw.match(/^(.+?)\s*[-\u2013]\s*(.+)$/)
-        const name = match ? match[2].trim() : raw
-        const artist = match ? match[1].trim() : 'Unknown artist'
+      arr.forEach(async (file) => {
         const sourceKey = makeSongId(file)
         const objectUrl = URL.createObjectURL(file)
+        const fallback = parseFallbackName(file.name)
+        const metadata = await extractAudioMetadata(file)
+        const coverUrl = metadata.coverBlob ? URL.createObjectURL(metadata.coverBlob) : null
 
         const song: Song = {
           id: sourceKey,
-          name,
-          artist,
+          name: metadata.title?.trim() || fallback.name,
+          artist: metadata.artist?.trim() || fallback.artist,
           duration: 0,
           dataUrl: objectUrl,
           audioBlob: file,
           sourceKey,
-          artUrl: null,
+          artUrl: coverUrl,
+          artBlob: metadata.coverBlob ?? null,
           liked: false,
           addedAt: Date.now(),
         }

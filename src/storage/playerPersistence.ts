@@ -73,6 +73,7 @@ function normalizeSong(song: Song, index: number) {
   return {
     ...song,
     audioBlob: song.audioBlob instanceof Blob ? song.audioBlob : null,
+    artBlob: song.artBlob instanceof Blob ? song.artBlob : null,
     sourceKey: typeof song.sourceKey === 'string' ? song.sourceKey : song.id,
     addedAt: typeof song.addedAt === 'number' ? song.addedAt : Date.now() - index,
   }
@@ -107,17 +108,25 @@ function dataUrlToBlob(dataUrl: string) {
 
 function createRuntimeSong(record: PersistedSongRecord, index: number) {
   const audioBlob = record.audioBlob instanceof Blob ? record.audioBlob : null
+  const artBlob = record.artBlob instanceof Blob ? record.artBlob : null
   const runtimeUrl = audioBlob
     ? URL.createObjectURL(audioBlob)
     : typeof record.dataUrl === 'string'
       ? record.dataUrl
       : ''
+  const runtimeArtUrl = artBlob
+    ? URL.createObjectURL(artBlob)
+    : typeof record.artUrl === 'string'
+      ? record.artUrl
+      : null
 
   return normalizeSong(
     {
       ...record,
       dataUrl: runtimeUrl,
       audioBlob,
+      artUrl: runtimeArtUrl,
+      artBlob,
     },
     index
   )
@@ -125,18 +134,26 @@ function createRuntimeSong(record: PersistedSongRecord, index: number) {
 
 async function toPersistedSongRecord(song: Song): Promise<PersistedSongRecord | null> {
   let audioBlob = song.audioBlob instanceof Blob ? song.audioBlob : null
+  let artBlob = song.artBlob instanceof Blob ? song.artBlob : null
 
   if (!audioBlob && typeof song.dataUrl === 'string' && song.dataUrl.startsWith('data:')) {
     audioBlob = dataUrlToBlob(song.dataUrl)
   }
 
+  if (!artBlob && typeof song.artUrl === 'string' && song.artUrl.startsWith('data:')) {
+    artBlob = dataUrlToBlob(song.artUrl)
+  }
+
   const dataUrl = audioBlob ? undefined : song.dataUrl
+  const artUrl = artBlob ? null : (song.artUrl ?? null)
   if (!audioBlob && !dataUrl) return null
 
   return {
     ...song,
     dataUrl,
     audioBlob,
+    artUrl,
+    artBlob,
     sourceKey: song.sourceKey ?? song.id,
   }
 }
