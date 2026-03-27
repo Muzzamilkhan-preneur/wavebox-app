@@ -4,6 +4,8 @@ export interface Song {
   artist: string
   duration: number
   dataUrl: string
+  audioBlob?: Blob | null
+  sourceKey?: string
   artUrl: string | null
   liked: boolean
   addedAt: number

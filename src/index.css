@@ -11,92 +11,48 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+html,
+body,
+#root {
+  min-height: 100%;
+  min-height: 100svh;
+}
+
 html {
   height: 100%;
   height: -webkit-fill-available;
 }
 
 body {
-  height: 100%;
-  height: -webkit-fill-available;
   margin: 0;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  user-select: none;
-  -webkit-user-select: none;
   font-family: 'Figtree', system-ui, sans-serif;
-  background:
-    radial-gradient(circle at 18% 18%, rgba(124, 255, 211, 0.16), transparent 24%),
-    radial-gradient(circle at 82% 10%, rgba(102, 153, 255, 0.18), transparent 26%),
-    linear-gradient(180deg, #080b12 0%, #0a0f17 44%, #06070b 100%);
+  background: linear-gradient(180deg, #080b10 0%, #0b1118 100%);
   color: rgba(255, 255, 255, 0.94);
 }
 
 #root {
-  height: 100%;
-  height: 100dvh;
+  min-height: 100svh;
 }
 
 .bg-app {
   background:
-    radial-gradient(circle at 15% 18%, rgba(124, 255, 211, 0.12), transparent 24%),
-    radial-gradient(circle at 82% 12%, rgba(102, 153, 255, 0.15), transparent 24%),
-    linear-gradient(180deg, #070a11 0%, #0b1018 45%, #06070c 100%);
+    radial-gradient(circle at top, rgba(121, 255, 208, 0.08), transparent 32%),
+    linear-gradient(180deg, #090d13 0%, #0c131b 50%, #091018 100%);
 }
 
 .glass-shell {
   background:
-    linear-gradient(180deg, rgba(18, 24, 35, 0.9), rgba(10, 13, 19, 0.96)),
-    radial-gradient(circle at top, rgba(124, 255, 211, 0.08), transparent 36%);
-  box-shadow:
-    0 40px 120px rgba(0, 0, 0, 0.46),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(28px);
-}
-
-.app-ambient {
-  pointer-events: none;
-  position: fixed;
-  inset: auto;
-  border-radius: 9999px;
-  filter: blur(70px);
-  opacity: 0.75;
-}
-
-.app-ambient-a {
-  top: 2rem;
-  left: -4rem;
-  width: 16rem;
-  height: 16rem;
-  background: rgba(124, 255, 211, 0.12);
-  animation: floatGlow 14s ease-in-out infinite;
-}
-
-.app-ambient-b {
-  right: -4rem;
-  bottom: 5rem;
-  width: 18rem;
-  height: 18rem;
-  background: rgba(102, 153, 255, 0.14);
-  animation: floatGlow 17s ease-in-out infinite reverse;
+    linear-gradient(180deg, rgba(9, 14, 20, 0.96), rgba(8, 12, 18, 0.98));
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
 }
 
 .album-fallback {
   background:
-    radial-gradient(circle at 25% 25%, rgba(131, 255, 214, 0.24), transparent 28%),
-    radial-gradient(circle at 75% 74%, rgba(104, 152, 255, 0.16), transparent 26%),
-    linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
-}
-
-@keyframes floatGlow {
-  0%, 100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-
-  50% {
-    transform: translate3d(0, -18px, 0) scale(1.04);
-  }
+    radial-gradient(circle at 28% 28%, rgba(131, 255, 214, 0.12), transparent 28%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
 }
 
 ::-webkit-scrollbar {
@@ -120,35 +76,29 @@ input[type='range'] {
 }
 
 input[type='range']::-webkit-slider-runnable-track {
-  height: 6px;
+  height: 4px;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 9999px;
 }
 
 input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: linear-gradient(135deg, #a4ffd9, #5ed3ff);
   margin-top: -5px;
-  box-shadow: 0 0 22px rgba(122, 248, 208, 0.32);
-  transition: transform 0.15s ease;
-}
-
-input[type='range']:hover::-webkit-slider-thumb {
-  transform: scale(1.08);
 }
 
 input[type='range']::-moz-range-track {
-  height: 6px;
+  height: 4px;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 9999px;
 }
 
 input[type='range']::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border: none;
   border-radius: 50%;
   background: linear-gradient(135deg, #a4ffd9, #5ed3ff);
@@ -159,6 +109,8 @@ select option {
   color: rgba(255, 255, 255, 0.94);
 }
 
-.h-dvh {
-  height: 100dvh;
+@media (max-width: 639px) {
+  .glass-shell {
+    box-shadow: none;
+  }
 }

@@ -38,23 +38,20 @@ export function SongRow({
 }: Props) {
   const actionToneClass =
     actionTone === 'accent'
-      ? 'hover:bg-accent/12 hover:text-accent'
+      ? 'text-accent'
       : actionTone === 'danger'
-        ? 'hover:bg-danger/10 hover:text-danger'
-        : 'hover:bg-white/10 hover:text-white/70'
+        ? 'text-danger'
+        : 'text-white/56'
 
   return (
     <div
       onClick={onClick}
-      className={`
-        group flex cursor-pointer items-center gap-3 rounded-[20px] px-3 py-3 transition-all
-        ${isActive
-          ? 'bg-white/[0.08] shadow-[0_14px_34px_rgba(0,0,0,0.18)] ring-1 ring-white/8'
-          : 'hover:bg-white/[0.045]'}
-      `}
+      className={`flex items-center gap-3 rounded-2xl px-2 py-3 transition-colors ${
+        isActive ? 'bg-white/[0.06]' : 'bg-transparent hover:bg-white/[0.03]'
+      }`}
     >
       <div className="relative flex-shrink-0">
-        <SongArt artUrl={song.artUrl} size={48} />
+        <SongArt artUrl={song.artUrl} size={44} />
         {isActive && isPlaying && (
           <div className="absolute inset-0 flex items-center justify-center rounded-[14px] bg-black/55">
             <EqBars />
@@ -63,18 +60,21 @@ export function SongRow({
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className={`truncate text-[15px] font-medium tracking-[-0.02em] ${isActive ? 'text-white' : 'text-white/88'}`}>
+        <p className={`truncate text-[15px] font-medium ${isActive ? 'text-white' : 'text-white/88'}`}>
           {song.name}
         </p>
-        <p className="mt-1 truncate text-xs text-white/38">{song.artist}</p>
+        <p className="mt-1 truncate text-xs text-white/42">{song.artist}</p>
       </div>
 
-      <span className="flex-shrink-0 text-xs tabular-nums text-white/25">{fmt(song.duration)}</span>
+      <span className="flex-shrink-0 text-xs tabular-nums text-white/28">{fmt(song.duration)}</span>
 
       {onAction && actionIcon && (
         <button
-          onClick={(e) => { e.stopPropagation(); onAction() }}
-          className={`flex h-8 w-8 items-center justify-center rounded-full text-white/25 opacity-0 transition-all group-hover:opacity-100 ${actionToneClass}`}
+          onClick={(e) => {
+            e.stopPropagation()
+            onAction()
+          }}
+          className={`flex h-8 w-8 items-center justify-center rounded-full bg-white/[0.04] ${actionToneClass}`}
           title={actionTitle}
         >
           <ActionGlyph icon={actionIcon} />

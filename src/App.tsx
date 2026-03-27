@@ -19,9 +19,18 @@ function AppShell() {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.target as HTMLElement).tagName === 'INPUT') return
-      if (e.code === 'Space')      { e.preventDefault(); setPlaying(!playing) }
-      if (e.code === 'ArrowRight') { e.preventDefault(); nextSong() }
-      if (e.code === 'ArrowLeft')  { e.preventDefault(); prevSong() }
+      if (e.code === 'Space') {
+        e.preventDefault()
+        setPlaying(!playing)
+      }
+      if (e.code === 'ArrowRight') {
+        e.preventDefault()
+        nextSong()
+      }
+      if (e.code === 'ArrowLeft') {
+        e.preventDefault()
+        prevSong()
+      }
     }
 
     window.addEventListener('keydown', handler)
@@ -30,17 +39,13 @@ function AppShell() {
 
   if (!hasHydrated) {
     return (
-      <div className="min-h-dvh bg-app text-white">
-        <div className="app-ambient app-ambient-a" />
-        <div className="app-ambient app-ambient-b" />
-
-        <div className="mx-auto flex h-dvh max-w-[460px] items-center justify-center px-6">
-          <div className="w-full rounded-[32px] border border-white/10 bg-white/[0.04] px-8 py-16 text-center shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-2xl">
-            <div className="mx-auto mb-5 h-14 w-14 rounded-[20px] bg-[radial-gradient(circle_at_35%_35%,rgba(150,255,214,0.95),rgba(95,197,255,0.55)_45%,rgba(255,255,255,0.04)_100%)] shadow-[0_0_45px_rgba(126,247,200,0.4)]" />
-            <p className="text-sm font-semibold uppercase tracking-[0.28em] text-white/55">Wavebox</p>
-            <p className="mt-4 text-lg font-semibold text-white/90">Restoring your library</p>
-            <p className="mt-2 text-sm leading-relaxed text-white/45">
-              Bringing back your songs, queue, and playback setup.
+      <div className="min-h-[100svh] bg-app text-white">
+        <div className="mx-auto flex min-h-[100svh] max-w-[560px] items-center justify-center px-6 py-10">
+          <div className="w-full max-w-[280px] text-center">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-white/40">Wavebox</p>
+            <p className="mt-4 text-2xl font-semibold tracking-[-0.05em] text-white">Restoring your library</p>
+            <p className="mt-3 text-sm leading-relaxed text-white/48">
+              Loading your saved songs and player state.
             </p>
           </div>
         </div>
@@ -49,14 +54,9 @@ function AppShell() {
   }
 
   return (
-    <div className="min-h-dvh bg-app text-white">
-      <div className="app-ambient app-ambient-a" />
-      <div className="app-ambient app-ambient-b" />
-
-      <div className="mx-auto flex h-dvh max-w-[520px] items-stretch px-3 py-3 sm:px-5 sm:py-5">
-        <div className="glass-shell relative flex h-full w-full flex-col overflow-hidden rounded-[30px] border border-white/10">
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-[radial-gradient(circle_at_top,rgba(138,255,209,0.12),transparent_68%)]" />
-
+    <div className="min-h-[100svh] bg-app text-white">
+      <div className="mx-auto flex min-h-[100svh] max-w-[560px] items-stretch sm:p-4">
+        <div className="glass-shell relative flex min-h-[100svh] w-full flex-col overflow-hidden sm:min-h-0 sm:rounded-[28px] sm:border sm:border-white/10">
           <Header />
           <TabBar />
 

@@ -26,11 +26,42 @@ function isPlaylist(value: unknown): value is Playlist {
     && Array.isArray(playlist.songIds)
 }
 
-export function createBackupFile(snapshot: PersistedPlayerSnapshot): WaveboxBackupFile {
+function blobToDataUrl(blob: Blob) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = () => reject(reader.error)
+    reader.readAsDataURL(blob)
+  })
+}
+
+async function toBackupSong(song: Song): Promise<Song> {
+  if (song.audioBlob instanceof Blob) {
+    return {
+      ...song,
+      dataUrl: await blobToDataUrl(song.audioBlob),
+      audioBlob: null,
+    }
+  }
+
+  if (song.dataUrl.startsWith('blob:')) {
+    throw new Error('Song source is not available for backup')
+  }
+
+  return {
+    ...song,
+    audioBlob: null,
+  }
+}
+
+export async function createBackupFile(snapshot: PersistedPlayerSnapshot): Promise<WaveboxBackupFile> {
   return {
     backupVersion: 1,
     exportedAt: new Date().toISOString(),
-    snapshot,
+    snapshot: {
+      ...snapshot,
+      library: await Promise.all(snapshot.library.map(toBackupSong)),
+    },
   }
 }
 

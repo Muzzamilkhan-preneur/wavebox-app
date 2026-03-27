@@ -1,5 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { loadPlayerSnapshot, saveLibrarySnapshot, savePlayerState } from '@/storage/playerPersistence'
+import { showToast } from '@/components/Toast'
 import { usePlayerStore } from '@/store/playerStore'
 
 export function usePlayerPersistence() {
@@ -13,6 +14,7 @@ export function usePlayerPersistence() {
   const repeat = usePlayerStore((s) => s.repeat)
   const volume = usePlayerStore((s) => s.volume)
   const activeTab = usePlayerStore((s) => s.activeTab)
+  const saveErrorShown = useRef(false)
 
   useEffect(() => {
     let cancelled = false
@@ -39,6 +41,15 @@ export function usePlayerPersistence() {
 
     const timeoutId = window.setTimeout(() => {
       void saveLibrarySnapshot(library)
+        .then(() => {
+          saveErrorShown.current = false
+        })
+        .catch(() => {
+          if (!saveErrorShown.current) {
+            saveErrorShown.current = true
+            showToast('Could not save your songs on this device')
+          }
+        })
     }, 180)
 
     return () => window.clearTimeout(timeoutId)
@@ -58,6 +69,12 @@ export function usePlayerPersistence() {
         activeTab,
         playlists,
       })
+        .catch(() => {
+          if (!saveErrorShown.current) {
+            saveErrorShown.current = true
+            showToast('Could not save your player state')
+          }
+        })
     }, 180)
 
     return () => window.clearTimeout(timeoutId)

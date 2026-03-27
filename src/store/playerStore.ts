@@ -45,12 +45,14 @@ interface PlayerState {
 function normalizeSong(song: Song, index: number) {
   return {
     ...song,
+    audioBlob: song.audioBlob instanceof Blob ? song.audioBlob : null,
+    sourceKey: typeof song.sourceKey === 'string' ? song.sourceKey : song.id,
     addedAt: typeof song.addedAt === 'number' ? song.addedAt : Date.now() - index,
   }
 }
 
 function songFingerprint(song: Song) {
-  return `${song.name}::${song.artist}::${song.dataUrl}`
+  return song.sourceKey ?? `${song.name}::${song.artist}::${song.dataUrl}`
 }
 
 function dedupeSongs(songs: Song[]) {
@@ -103,7 +105,7 @@ function buildSnapshotState(snapshot: PersistedPlayerSnapshot | null) {
     shuffle: snapshot.shuffle,
     repeat: snapshot.repeat,
     volume: Math.max(0, Math.min(1, snapshot.volume)),
-    activeTab: snapshot.activeTab,
+    activeTab: snapshot.activeTab === 'queue' ? 'library' : snapshot.activeTab,
     playing: false,
     progress: 0,
     currentTime: 0,

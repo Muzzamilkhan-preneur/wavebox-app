@@ -19,49 +19,47 @@ export function useFileUpload() {
       if (!arr.length) return
 
       arr.forEach((file) => {
-        const reader = new FileReader()
-        reader.onload = (ev) => {
-          const dataUrl = ev.target?.result as string
-          const raw     = file.name.replace(/\.[^/.]+$/, '')
-          const match   = raw.match(/^(.+?)\s*[-–]\s*(.+)$/)
-          const name    = match ? match[2].trim() : raw
-          const artist  = match ? match[1].trim() : 'Unknown artist'
-          const id      = makeSongId(file)
+        const raw = file.name.replace(/\.[^/.]+$/, '')
+        const match = raw.match(/^(.+?)\s*[-\u2013]\s*(.+)$/)
+        const name = match ? match[2].trim() : raw
+        const artist = match ? match[1].trim() : 'Unknown artist'
+        const sourceKey = makeSongId(file)
+        const objectUrl = URL.createObjectURL(file)
 
-          const song: Song = {
-            id,
-            name,
-            artist,
-            duration: 0,
-            dataUrl,
-            artUrl: null,
-            liked: false,
-            addedAt: Date.now(),
-          }
-
-          const tmp = new Audio()
-          let done = false
-
-          const finish = () => {
-            if (done) return
-            done = true
-            tmp.onloadedmetadata = null
-            tmp.onerror = null
-            tmp.src = ''
-            addSongs([song])
-            showToast(`Added "${song.name}"`)
-          }
-
-          tmp.src   = dataUrl
-          tmp.onloadedmetadata = () => {
-            song.duration = tmp.duration || 0
-            finish()
-          }
-          tmp.onerror = () => {
-            finish()
-          }
+        const song: Song = {
+          id: sourceKey,
+          name,
+          artist,
+          duration: 0,
+          dataUrl: objectUrl,
+          audioBlob: file,
+          sourceKey,
+          artUrl: null,
+          liked: false,
+          addedAt: Date.now(),
         }
-        reader.readAsDataURL(file)
+
+        const tmp = new Audio()
+        let done = false
+
+        const finish = () => {
+          if (done) return
+          done = true
+          tmp.onloadedmetadata = null
+          tmp.onerror = null
+          tmp.src = ''
+          addSongs([song])
+          showToast(`Added "${song.name}"`)
+        }
+
+        tmp.src = objectUrl
+        tmp.onloadedmetadata = () => {
+          song.duration = tmp.duration || 0
+          finish()
+        }
+        tmp.onerror = () => {
+          finish()
+        }
       })
     },
     [addSongs]
