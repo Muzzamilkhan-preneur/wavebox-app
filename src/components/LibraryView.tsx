@@ -68,6 +68,7 @@ export function LibraryView() {
               <p className="mt-1 text-sm text-white/58">
                 {visibleSongs.length} track{visibleSongs.length === 1 ? '' : 's'}
               </p>
+              <p className="mt-1 text-xs text-white/34">Press and hold a song to remove it.</p>
             </div>
 
             {visibleSongs.length > 0 && (
@@ -93,9 +94,6 @@ export function LibraryView() {
                   song={song}
                   isActive={song.id === activeSongId}
                   isPlaying={song.id === activeSongId && playing}
-                  actionIcon="trash"
-                  actionTitle="Remove song"
-                  actionTone="danger"
                   onClick={() => playSongs(index)}
                   onAction={() => removeSong(song.id)}
                 />
