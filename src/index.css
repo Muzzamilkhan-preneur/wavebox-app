@@ -28,7 +28,7 @@ body {
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: 'Figtree', system-ui, sans-serif;
+  font-family: 'Manrope', system-ui, sans-serif;
   background: linear-gradient(180deg, #080b10 0%, #0b1118 100%);
   color: rgba(255, 255, 255, 0.94);
 }
