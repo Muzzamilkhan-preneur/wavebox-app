@@ -1,0 +1,20 @@
+export interface Song {
+  id: string
+  name: string
+  artist: string
+  duration: number
+  dataUrl: string
+  artUrl: string | null
+  liked: boolean
+  addedAt: number
+}
+
+export interface Playlist {
+  id: string
+  name: string
+  songIds: string[]
+  createdAt: number
+}
+
+export type RepeatMode = 'off' | 'all' | 'one'
+export type Tab = 'library' | 'nowplaying' | 'queue'
