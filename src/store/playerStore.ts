@@ -49,6 +49,31 @@ function normalizeSong(song: Song, index: number) {
   }
 }
 
+function songFingerprint(song: Song) {
+  return `${song.name}::${song.artist}::${song.dataUrl}`
+}
+
+function dedupeSongs(songs: Song[]) {
+  const seenIds = new Set<string>()
+  const seenFingerprints = new Set<string>()
+  const unique: Song[] = []
+
+  songs.forEach((song, index) => {
+    const normalized = normalizeSong(song, index)
+    const fingerprint = songFingerprint(normalized)
+
+    if (seenIds.has(normalized.id) || seenFingerprints.has(fingerprint)) {
+      return
+    }
+
+    seenIds.add(normalized.id)
+    seenFingerprints.add(fingerprint)
+    unique.push(normalized)
+  })
+
+  return unique
+}
+
 function makePlaylistId() {
   return `pl_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
 }
@@ -58,7 +83,7 @@ function buildSnapshotState(snapshot: PersistedPlayerSnapshot | null) {
     return { hasHydrated: true }
   }
 
-  const library = (snapshot.library ?? []).map(normalizeSong)
+  const library = dedupeSongs(snapshot.library ?? [])
   const songsById = new Map(library.map((song) => [song.id, song]))
   const queue = snapshot.queueIds.map((id) => songsById.get(id)).filter(Boolean) as Song[]
   const queueIndex = queue.length
@@ -94,7 +119,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   addSongs: (songs) =>
     set((s) => {
       const nextSongs = songs.map((song, index) => normalizeSong(song, index))
-      const merged = [...s.library, ...nextSongs]
+      const merged = dedupeSongs([...s.library, ...nextSongs])
 
       if (s.queue.length === 0) {
         return { library: merged, queue: merged, queueIndex: 0 }

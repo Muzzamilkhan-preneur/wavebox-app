@@ -6,6 +6,11 @@ import { Song } from '@/types'
 export function useFileUpload() {
   const addSongs = usePlayerStore((s) => s.addSongs)
 
+  function makeSongId(file: File) {
+    const safeName = file.name.replace(/[^a-z0-9]+/gi, '_').toLowerCase()
+    return `wb_${safeName}_${file.size}_${file.lastModified}`
+  }
+
   const processFiles = useCallback(
     (files: FileList | File[]) => {
       const arr = Array.from(files).filter(
@@ -21,7 +26,7 @@ export function useFileUpload() {
           const match   = raw.match(/^(.+?)\s*[-–]\s*(.+)$/)
           const name    = match ? match[2].trim() : raw
           const artist  = match ? match[1].trim() : 'Unknown artist'
-          const id      = `wb_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
+          const id      = makeSongId(file)
 
           const song: Song = {
             id,
@@ -35,14 +40,26 @@ export function useFileUpload() {
           }
 
           const tmp = new Audio()
-          tmp.src   = dataUrl
-          tmp.onloadedmetadata = () => {
-            song.duration = tmp.duration || 0
+          let done = false
+
+          const finish = () => {
+            if (done) return
+            done = true
+            tmp.onloadedmetadata = null
+            tmp.onerror = null
             tmp.src = ''
             addSongs([song])
             showToast(`Added "${song.name}"`)
           }
-          tmp.onerror = () => { tmp.src = ''; addSongs([song]); showToast(`Added "${song.name}"`) }
+
+          tmp.src   = dataUrl
+          tmp.onloadedmetadata = () => {
+            song.duration = tmp.duration || 0
+            finish()
+          }
+          tmp.onerror = () => {
+            finish()
+          }
         }
         reader.readAsDataURL(file)
       })
