@@ -1,4 +1,4 @@
-import { Plus } from 'lucide-react'
+import { LibraryBig, Plus } from 'lucide-react'
 import { useRef } from 'react'
 import { useFileUpload } from '@/hooks/useFileUpload'
 import { usePlayerStore } from '@/store/playerStore'
@@ -10,11 +10,17 @@ export function Header() {
 
   return (
     <header className="relative z-10 flex shrink-0 items-center justify-between px-4 pb-3 pt-4 sm:px-5 sm:pt-5">
-      <div>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/36">Wavebox</p>
-        <p className="mt-1 text-sm text-white/58">
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/[0.05] text-white/72">
+          <LibraryBig size={18} />
+        </div>
+
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/36">Wavebox</p>
+          <p className="mt-1 text-sm text-white/58">
           {libraryCount ? `${libraryCount} saved track${libraryCount === 1 ? '' : 's'}` : 'Personal offline player'}
-        </p>
+          </p>
+        </div>
       </div>
 
       <button
